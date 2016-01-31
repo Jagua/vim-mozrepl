@@ -1,0 +1,56 @@
+#!/bin/sh
+
+while [ $# -gt 0 ];
+do
+  case ${1} in
+    --help)
+      echo "$(basename $0) [--host=HOST] [--port=PORT] [--client] -e COMMAND"
+      exit 1
+      ;;
+    -h|--host)
+      HOST=${2}
+      shift
+      ;;
+    -p|--port)
+      PORT=${2}
+      shift
+      ;;
+    -c|--client)
+      CLIENT=${2}
+      shift
+      ;;
+    -r|--rtp|--runtimepath)
+      RTP=${2}
+      shift
+      ;;
+    -e)
+      CMD=${2}
+      shift
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
+
+HOST=${HOST:-${VIM_MOZREPL_HOST}}
+HOST=${HOST:+"'host' : '${HOST}',"}
+
+PORT=${PORT:-${VIM_MOZREPL_PORT}}
+PORT=${PORT:+"'port' : ${PORT},"}
+
+CLIENT=${CLIENT:-${VIM_MOZREPL_CLIENT}}
+CLIENT=${CLIENT:+"'client': '${CLIENT}',"}
+
+RTP=${RTP:-${VIM_MOZREPL_RUNTIMEPATH}}
+RTP=${RTP:+" . ',${RTP}'"}
+
+CMD=${CMD:-''}
+
+if [ -z ${CMD} ]
+then
+  echo "see: $(basename $0) --help"
+else
+  vim -i NONE -u NONE -N -e --cmd "let &runtimepath .= ',' . fnamemodify(getcwd(), ':h')${RTP}" --cmd "echo mozrepl#cmd('${CMD}', {${CLIENT} ${HOST} ${PORT}}).body" --cmd 'quit'
+fi
+

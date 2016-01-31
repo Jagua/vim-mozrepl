@@ -1,0 +1,71 @@
+# vim-mozrepl
+
+**vim-mozrepl** is a Vim plugin to provide functions to mozrepl.
+
+This plugin depends on:
+
+* [Firefox](https://www.mozilla.org/en-US/firefox/)
+* [MozRepl](https://addons.mozilla.org/en-US/firefox/addon/mozrepl/)
+
+Latest: https://github.com/Jagua/vim-mozrepl
+
+
+
+## Install
+
+
+### A) vim-plug
+
+```vim
+Plug 'Jagua/vim-mozrepl'
+```
+
+
+### B) NeoBundle
+
+```vim
+NeoBundle 'Jagua/vim-mozrepl'
+```
+
+
+
+## Examples
+
+
+### If you want to get the url of current tab.
+
+```vim
+let s:url1 = mozrepl#util#pwd().body
+" specify port
+let s:url2 = mozrepl#util#pwd({'port' : 4242}).body
+" not use mozrepl#util#pwd()
+let s:url3 = mozrepl#cmd('content.document.location.href', {'port' : 4242}).body
+" method chain
+let s:url4 = mozrepl#new().port(4242).cmd('content.document.location.href').body
+```
+
+
+### If you want to get the title of current tab.
+
+```vim
+let s:title = mozrepl#cmd('content.document.title').body
+```
+
+
+### If you want to get the HTML of current tab.
+
+```vim
+let s:html = mozrepl#util#getHtml()
+```
+
+
+### If you want to know whether a command succeeded.
+
+```vim
+let s:obj = mozrepl#util#pwd()
+if s:obj.status == 1
+  echo 'succeeded'
+elseif s:obj.status == 0
+  echo 'failed'
+endif
+```
