@@ -14,7 +14,7 @@ let g:mozrepl#_default_option = {
 \ 'host' : '127.0.0.1',
 \ 'port' : 4242,
 \ 'client' : '',
-\ 'timeout' : 10 * 1000,
+\ 'timeout' : 2000,
 \ 'activate' : 1,
 \ 'newtab' : 1,
 \ }
@@ -37,7 +37,7 @@ endfunction "}}}
 let g:mozrepl#_default_plugins = [
 \ { 'repl_name' : 'vim',
 \   'repl_function' : function('mozrepl#vim_repl'),
-\   'repl_available' : has('channel') && exists('*connect()') },
+\   'repl_available' : has('channel') && exists('*ch_open()') },
 \ { 'repl_name' : 'vimproc',
 \   'repl_function' : function('mozrepl#vimproc_repl'),
 \   'repl_available' : mozrepl#has_vimproc() },
@@ -188,26 +188,28 @@ endfunction "}}}
 " Note: timeout is not implemented.
 function! mozrepl#vim_repl(cmd, ...) abort "{{{
   let res = ''
-  if has('channel') && exists('*connect()')
+  if has('channel') && exists('*ch_open()')
     let option = mozrepl#parse_option(a:000)
     " XXX: gBrowser... is a dummy data.
     let cmd = (a:cmd == '' ? 'gBrowser.contentDocument.location.href' : a:cmd)
+    let timeout = option.timeout
     try
-      let handle = connect(option.host . ':' . string(option.port), 'raw')
+      let handle = ch_open(option.host . ':' . string(option.port),
+      \                    {'mode' : 'raw', 'timeout' : timeout})
       while match(res, 'repl\d*> ') == -1
-        let res .= sendraw(handle, '')
+        let res .= ch_sendraw(handle, '')
       endwhile
       let res2 = ''
-      let res2 .= sendraw(handle, cmd)
+      let res2 .= ch_sendraw(handle, cmd)
       while match(res2, 'repl\d*> ') == -1
-        let res2 .= sendraw(handle, '')
+        let res2 .= ch_sendraw(handle, '')
       endwhile
       let res .= res2
     catch
       let res = ''
     finally
       if exists('handle')
-        call disconnect(handle)
+        call ch_close(handle)
       endif
     endtry
   else

@@ -1,6 +1,6 @@
 *mozrepl.txt*   mozrepl in Vim.
 
-Version: 0.1.0
+Version: 0.1.1
 Author: Jagua
 License: MIT License (http://opensource.org/licenses/mit-license.php)
 
@@ -137,8 +137,8 @@ client:                                                *mozrepl-config-client*
         Default: vim (if possible)
 
 timeout:                                              *mozrepl-config-timeout*
-        timeout (second). Float.
-        Default: 10
+        timeout (milliseconds). Integer.
+        Default: 2000
 
 activate:                                            *mozrepl-config-activate*
         activate. Integer.
@@ -160,7 +160,7 @@ EXAMPLES                                                    *mozrepl-examples*
 >
         let g:mozrepl_config = {'host' : '127.0.0.1',
         \                       'port' : 4242,
-        \                       'timeout' : 10 * 1000,
+        \                       'timeout' : 2000,
         \                       'activate' : 1}
 
         let url = mozrepl#util#pwd().body
@@ -171,6 +171,9 @@ EXAMPLES                                                    *mozrepl-examples*
 
 ==============================================================================
 CHANGELOG                                                  *mozrepl-changelog*
+
+0.1.1  2016-02-07
+       - use ch_*() instead of obsoleted api names.
 
 0.1.0  2016-01-31
        - Initial version.
