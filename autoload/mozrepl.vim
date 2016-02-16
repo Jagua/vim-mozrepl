@@ -185,7 +185,7 @@ endfunction "}}}
 
 
 " The result is a String.
-" Note: timeout is not implemented.
+" Note: require +channel feature.
 function! mozrepl#vim_repl(cmd, ...) abort "{{{
   let res = ''
   if has('channel') && exists('*ch_open()')
