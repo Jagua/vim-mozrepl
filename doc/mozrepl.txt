@@ -1,6 +1,6 @@
 *mozrepl.txt*   mozrepl in Vim.
 
-Version: 0.1.1
+Version: 0.1.2
 Author: Jagua
 License: MIT License (http://opensource.org/licenses/mit-license.php)
 
@@ -171,6 +171,9 @@ EXAMPLES                                                    *mozrepl-examples*
 
 ==============================================================================
 CHANGELOG                                                  *mozrepl-changelog*
+
+0.1.2  2016-03-17
+       - use callback in ch_open().
 
 0.1.1  2016-02-07
        - use ch_*() instead of obsoleted api names.

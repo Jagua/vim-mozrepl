@@ -188,6 +188,7 @@ endfunction "}}}
 " Note: require +channel feature.
 function! mozrepl#vim_repl(cmd, ...) abort "{{{
   let res = ''
+  let s:msg = ''
   if has('channel') && exists('*ch_open()')
     let option = mozrepl#parse_option(a:000)
     " XXX: gBrowser... is a dummy data.
@@ -195,16 +196,23 @@ function! mozrepl#vim_repl(cmd, ...) abort "{{{
     let timeout = option.timeout
     try
       let handle = ch_open(option.host . ':' . string(option.port),
-      \                    {'mode' : 'raw', 'timeout' : timeout})
-      while match(res, 'repl\d*> ') == -1
-        let res .= ch_sendraw(handle, '')
+      \                    {'mode' : 'raw',
+      \                     'timeout' : timeout,
+      \                     'waittime' : -1,
+      \                     'callback' : 'mozrepl#vim_repl_callback'})
+      while empty(s:msg) && timeout >= 0
+        sleep 10m
+        let timeout -= 10
       endwhile
-      let res2 = ''
-      let res2 .= ch_sendraw(handle, cmd)
-      while match(res2, 'repl\d*> ') == -1
-        let res2 .= ch_sendraw(handle, '')
+      let res = s:msg
+      let s:msg = ''
+      call ch_sendraw(handle, cmd)
+      let timeout = option.timeout
+      while empty(s:msg) && timeout >= 0
+        sleep 10m
+        let timeout -= 10
       endwhile
-      let res .= res2
+      let res .= s:msg
     catch
       let res = ''
     finally
@@ -216,6 +224,13 @@ function! mozrepl#vim_repl(cmd, ...) abort "{{{
     echoerr 'mozrepl: require +channel feature.'
   endif
   return res
+endfunction "}}}
+
+
+function! mozrepl#vim_repl_callback(channel, msg) abort "{{{
+  if match(a:msg, 'repl\d*> $') != -1
+    let s:msg = a:msg
+  endif
 endfunction "}}}
 
 
