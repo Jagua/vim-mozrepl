@@ -5,6 +5,6 @@ before_test:
 build: off
 test_script:
   - cmd: |
-    vim --version
-    %TEMP%\vim-themis\bin\themis.bat
+      vim --version
+      %TEMP%\vim-themis\bin\themis.bat
 deploy: off
