@@ -6,10 +6,6 @@ os:
 
 sudo: false
 
-cache:
-  directories:
-    - /tmp/vim-themis
-
 before_script:
   - git clone --depth 1 https://github.com/thinca/vim-themis /tmp/vim-themis
 
