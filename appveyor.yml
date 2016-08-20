@@ -1,0 +1,10 @@
+version: '{build}'
+clone_depth: 1
+before_test:
+  - cmd: git clone --depth 1 https://github.com/thinca/vim-themis
+build: off
+test_script:
+  - cmd: |
+    vim --version
+    .\vim-themis\bin\themis.bat
+deploy: off
